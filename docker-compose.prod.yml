@@ -1,0 +1,8 @@
+version: '2'
+volumes:
+  - jenkinsdata
+services:
+  jenkinsmaster:
+    image: ${DOCKER_BASE}/jenkinsfile-pipeline
+    volumes:
+       jenkinsdata: /var/jenkins_home

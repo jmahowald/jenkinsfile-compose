@@ -1,0 +1,12 @@
+jenkinsdata/*
+*.key
+*.pem
+
+builds/
+lastStable
+lastSuccessful
+nextBuildNumber
+scm-polling.log
+workspace/
+workspace@script/
+.envrc

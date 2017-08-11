@@ -1,0 +1,2 @@
+gitlab-plugin:1.4.3
+workflow-cps-global-lib:2.4

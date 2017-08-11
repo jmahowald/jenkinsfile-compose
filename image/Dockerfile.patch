@@ -1,0 +1,6 @@
+FROM jenkins-pipeline
+
+
+COPY patch-plugins.txt .
+RUN /usr/local/bin/plugins.sh patch-plugins.txt
+
