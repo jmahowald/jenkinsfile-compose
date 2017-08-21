@@ -1,6 +1,8 @@
 version: '2'
 services:
   jenkinsmaster:
+    build:
+      context: ./image
     links:
        - smtpserver
     volumes:
@@ -8,17 +10,16 @@ services:
        # These MUST be the same directory otherwise these types of problems hit you
        # when running containers in jenkins in containers
        # https://damnhandy.com/2016/03/06/creating-containerized-build-environments-with-the-jenkins-pipeline-plugin-and-docker-well-almost/
-       - ${JENKINS_HOME}:${JENKINS_HOME}
+       - /var/jenkins_home:/var/jenkins_home
        - ./hudson.tasks.Mailer.xml:/var/jenkins_home/hudson.tasks.Mailer.xml
-       # - ./credentials.xml:/var/jenkins_home/credentials.xml
+       - ./credentials.xml:/var/jenkins_home/credentials.xml
        - ./gitkey.pem:/var/jenkins/gitkey.pem:ro
-    labels:
-    image: ${DOCKER_BASE}/jenkins-pipeline
+    image: jenkins-pipeline
     ports:
     - 8080:8080
     environment:
-      JENKINS_HOME: ${JENKINS_HOME}
-      JAVA_OPTS :  -Djenkins.install.runSetupWizard=false
+      JENKINS_HOME: /var/jenkins_home
+      JAVA_OPTS : -Djenkins.install.runSetupWizard=false
       DOCKER_REG: https://${DOCKER_BASE}
       DOCKER_REG_CRED_ID: gituser
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
@@ -29,25 +30,3 @@ services:
     labels:
     - traefik.enable=false
     image: namshi/smtp
-  # gitlab:
-  #   image: gitlab/gitlab-ce:latest
-  #   #build: 'gitlab/gitlab-ce:latest'
-  #   restart: always
-  #   hostname: 'gitlab.test.local'
-  #   environment:
-  #     GITLAB_OMNIBUS_CONFIG: |
-  #       external_url 'http://gitlab.test.local'
-  #       registry_external_url 'http://regsitry.test.local'
-  #       gitlab_rails['registry_host'] = "registry.test.local"
-  #       gitlab_rails['registry_port'] = "5000"
-  #       gitlab_rails['registry_api_url'] = "http://localhost:5000"
-  #       nginx['listen_addresses'] = ['0.0.0.0']
-  #   ports:
-  #     - '8888:80'
-  #     - '443:443'
-  #     - '2222:22'
-  #     - '5006:5006'
-  #   volumes:
-  #     - ./gitlab/config:/etc/gigtlab
-  #     - ./gitlab/logs:/var/log/gitlab
-  #     - ./gitlab/data:/var/opt/gitlab
